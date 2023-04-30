@@ -40,7 +40,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>kz.timka.HelloApplication</mainClass>
+                    <mainClass>kz.timka.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
