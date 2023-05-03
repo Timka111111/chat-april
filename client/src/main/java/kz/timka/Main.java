@@ -11,7 +11,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 400, 400);
+        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("Chat!");
         stage.setScene(scene);
         stage.show();

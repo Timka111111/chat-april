@@ -1,7 +1,5 @@
 package kz.timka.server;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -32,21 +30,21 @@ public class Server {
 
     public void subscribe(ClientHandler clientHandler) {
         clients.add(clientHandler);
-        System.out.println(clients);
+        broadcastClientList();
     }
 
     public void unsubscribe(ClientHandler clientHandler) {
         clients.remove(clientHandler);
-        System.out.println(clients);
+        broadcastClientList();
     }
 
-    public void broadcastMessage(String message) throws IOException{
+    public void broadcastMessage(String message) {
         for(ClientHandler clientHandler : clients) {
             clientHandler.sendMessage(message);
         }
     }
 
-    public boolean isNickBusy(String username) {
+    public boolean isUserOnline(String username) {
         for(ClientHandler clientHandler : clients) {
             if(clientHandler.getUsername().equals(username)) {
                 return true;
@@ -54,5 +52,31 @@ public class Server {
         }
 
         return false;
+    }
+
+    public void sendPrivateMessage(ClientHandler sender, String receiver, String message) {
+        for(ClientHandler clientHandler : clients) {
+            if(clientHandler.getUsername().equals(receiver)) {
+                clientHandler.sendMessage("От: " + sender.getUsername() + " Сообщение: " + message);
+                sender.sendMessage("Пользователю: " + receiver + " Сообщение: " + message);
+                return;
+            }
+        }
+        sender.sendMessage("Невозможно отправить сообщение пользователю " + receiver + " Такого пользователя нет в сети");
+
+    }
+
+    public void broadcastClientList() {
+        StringBuilder stringBuilder = new StringBuilder("/clients_list ");
+        for(ClientHandler c : clients) {
+            stringBuilder.append(c.getUsername()).append(" ");
+        }
+        stringBuilder.setLength(stringBuilder.length() - 1);
+        // /clients_list Bob Alex James
+        String clientList = stringBuilder.toString();
+        for(ClientHandler clientHandler : clients) {
+            clientHandler.sendMessage(clientList);
+        }
+
     }
 }
