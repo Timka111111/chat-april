@@ -9,9 +9,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
 <VBox xmlns:fx="http://javafx.com/fxml" fx:controller="kz.timka.Controller">
     <HBox fx:id="loginPanel">
-        <TextField fx:id="usernameField" HBox.hgrow="ALWAYS" promptText="Укажите свой ник"/>
+        <TextField fx:id="loginField" HBox.hgrow="ALWAYS" promptText="Введите свой логин"/>
+        <PasswordField fx:id="passwordField" HBox.hgrow="ALWAYS" promptText="Введите свой пароль"/>
         <Button text="Войти" onAction="#login"/>
     </HBox>
 

@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
 
     @FXML
-    TextField msgField, usernameField;
+    TextField msgField, loginField;
 
     @FXML
     TextArea txtArea;
@@ -25,6 +25,9 @@ public class Controller implements Initializable {
     @FXML
     ListView clientsList;
 
+    @FXML
+    PasswordField passwordField;
+
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
@@ -32,40 +35,35 @@ public class Controller implements Initializable {
     private String username;
 
     public void setUsername(String username) {
-        System.out.println(username);
         this.username = username;
-        if (username != null) {
-            loginPanel.setVisible(false);
-            loginPanel.setManaged(false);
-            msgPanel.setVisible(true);
-            msgPanel.setManaged(true);
-            clientsList.setVisible(true);
-            clientsList.setManaged(true);
+        boolean usernameIsNull = username == null;
+        loginPanel.setVisible(usernameIsNull);
+        loginPanel.setManaged(usernameIsNull);
+        msgPanel.setVisible(!usernameIsNull);
+        msgPanel.setManaged(!usernameIsNull);
+        clientsList.setVisible(!usernameIsNull);
+        clientsList.setManaged(!usernameIsNull);
 
-        } else {
-            loginPanel.setVisible(true);
-            loginPanel.setManaged(true);
-            msgPanel.setVisible(false);
-            msgPanel.setManaged(false);
-            clientsList.setVisible(false);
-            clientsList.setManaged(false);
-
-        }
     }
 
     public void login() {
+
+        if (loginField.getText().isEmpty()) {
+            showErrorAlert("Имя пользователя не должно быть пустым");
+            return;
+        }
+
+        if (passwordField.getText().isEmpty()) {
+            showErrorAlert("Пароль не должен быть пустым");
+            return;
+        }
+
         if (socket == null || socket.isClosed()) {
             connect();
         }
 
-        if (usernameField.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Имя пользователя не должно быть пустым", ButtonType.OK);
-            alert.showAndWait();
-            return;
-        }
-
         try {
-            out.writeUTF("/login " + usernameField.getText());
+            out.writeUTF("/login " + loginField.getText() + " " + passwordField.getText());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -130,8 +128,7 @@ public class Controller implements Initializable {
 
 
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Невозможно подключиться к серверу", ButtonType.OK);
-            alert.showAndWait();
+            showErrorAlert("Невозможно подключиться к серверу");
         }
     }
 
@@ -142,8 +139,7 @@ public class Controller implements Initializable {
             msgField.clear();
             msgField.requestFocus();
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to send msg", ButtonType.OK);
-            alert.showAndWait();
+            showErrorAlert("Unable to send msg");
         }
     }
 
@@ -156,6 +152,14 @@ public class Controller implements Initializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText(message);
+        alert.setHeaderText(null);
+        alert.setTitle("chat-april");
+        alert.showAndWait();
     }
 
     @Override
