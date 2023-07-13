@@ -93,7 +93,7 @@ public class ClientHandler {
                 return;
             }
             String newNickname = tokens[1];
-            if(server.isUserOnline(newNickname)) {
+            if(server.getAuthenticationProvider().icNickBusy(newNickname)) {
                 sendMessage("Server: Такой никнейм уже занят");
                 return;
             }

@@ -28,6 +28,11 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider{
     }
 
     @Override
+    public void init() {
+
+    }
+
+    @Override
     public String getNicknameByLoginAndPassword(String login, String password) {
         for(User u : users) {
             if(u.login.equals(login) && u.password.equals(password)) {
@@ -45,5 +50,15 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider{
                 return;
             }
         }
+    }
+
+    @Override
+    public boolean icNickBusy(String nickname) {
+        return false;
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 }
